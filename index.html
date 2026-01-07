@@ -1,23 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>今天吃什麼？ 🍴</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-        <h1>今天吃什麼？</h1>
 
+    <h1>今天吃什麼？ 🍽️</h1>
+
+    <!-- 測驗區 -->
     <div id="quiz">
-    <p id="question"></p>
-    <div id="options"></div>
+        <p id="question"></p>
+        <div id="options"></div>
+        <!-- 已改為自動跳下一題，這個按鈕可以隱藏 -->
+        <!-- <button id="nextBtn">下一題</button> -->
     </div>
 
+    <!-- 結果區 -->
     <div id="result">
-    <h2 id="foodName"></h2>
-    <button id="restartBtn">再測一次</button>
+        <h2 id="foodName"></h2>
+        <button id="restartBtn">再測一次 🔄</button>
     </div>
+
+    <!-- 統計區 -->
+    <div id="stats">
+        <h2>測驗統計 📊</h2>
+        <table id="foodTable" border="1">
+            <thead>
+                <tr>
+                    <th>食物</th>
+                    <th>次數</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <canvas id="foodChart" width="400" height="400"></canvas>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
