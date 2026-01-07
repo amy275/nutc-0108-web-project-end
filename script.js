@@ -23,7 +23,7 @@ const questions = [
 // 3️⃣ 標籤對應表
 const answerTagMap = [
   { "正餐 🍛": "meal", "輕食 🥪": "light" },
-  { "重口味 🌶️": "strong", "清淡 🥗": "lightTaste", "甜 🍰": "sweet" },
+  { "重口味 🌶️": "strong", "清淡 🥗": "lightTaste", "甜食 🍰": "sweet" },
   { "很趕 ⏰": "fast", "不趕 🛋️": "relax" },
   { "台式 🥟": "taiwan", "日式 🍣": "japanese", "西式 🍔": "western" },
   { "$ 💰": "cheap", "$$ 💵": "mid", "$$$ 💎": "high" }
@@ -31,11 +31,19 @@ const answerTagMap = [
 
 // 4️⃣ 食物資料
 const foodList = [
-  { name: "雞排 🍗", tags: ["meal", "strong", "fast", "taiwan", "cheap"] },
+  { name: "雞排 🍗", tags: ["light", "strong", "fast", "taiwan", "cheap"] },
+  { name: "鐵板燒 🔪", tags: ["meal", "strong", "relax", "taiwan", "high"] },
+  { name: "火鍋 🍲", tags: ["meal", "strong", "relax", "taiwan", "mid"] },
   { name: "拉麵 🍜", tags: ["meal", "strong", "relax", "japanese", "mid"] },
+  { name: "牛排 🥩", tags: ["meal", "strong", "relax", "western", "high"] },
   { name: "壽司 🍣", tags: ["light", "lightTaste", "relax", "japanese", "mid"] },
   { name: "漢堡 🍔", tags: ["meal", "strong", "fast", "western", "mid"] },
-  { name: "甜點 🍰", tags: ["light", "sweet", "relax", "western", "cheap"] }
+  { name: "義大利麵 🍝", tags: ["meal", "strong", "relax", "western", "mid"] },
+  { name: "蛋糕 🍰", tags: ["light", "sweet", "relax", "western", "cheap"] },
+  { name: "豆花 🥣", tags: ["light", "sweet", "fast", "taiwan", "cheap"] },
+  { name: "剉冰 🍨", tags: ["light", "sweet", "fast", "taiwan", "mid"] },
+  { name: "鬆餅 🥞", tags: ["light", "sweet", "relax", "japense", "mid"] },
+  { name: "手搖飲 🧋", tags: ["light", "sweet", "fast", "taiwan", "cheap"] }
 ];
 
 // 5️⃣ 狀態
