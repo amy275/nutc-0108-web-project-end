@@ -5,6 +5,7 @@ const nextBtn = document.getElementById("nextBtn");
 const quiz = document.getElementById("quiz");
 const result = document.getElementById("result");
 const foodName = document.getElementById("foodName");
+const restartBtn = document.getElementById("restartBtn");
 
 // 2️⃣ 題目資料
 const questions = [
@@ -35,7 +36,6 @@ const foodList = [
 
 // 5️⃣ 狀態變數
 let currentQuestion = 0;
-let selectedAnswer = null;
 let userTags = [];
 
 // 6️⃣ 顯示題目
@@ -46,56 +46,66 @@ function showQuestion() {
   questions[currentQuestion].options.forEach(option => {
     const btn = document.createElement("button");
     btn.textContent = option;
-    btn.onclick = () => selectAnswer(option);
+    btn.onclick = () => selectAnswer(option); // 選完直接跳下一題
     optionsEl.appendChild(btn);
   });
 }
 
 // 7️⃣ 選擇答案
 function selectAnswer(answer) {
-  selectedAnswer = answer;
   userTags[currentQuestion] = answerTagMap[currentQuestion][answer];
-}
 
-// 8️⃣ 下一題按鈕
-nextBtn.onclick = () => {
-  if (!selectedAnswer) {
-    alert("請先選擇一個選項！");
-    return;
-  }
-
-  selectedAnswer = null;
-
+  // 自動跳下一題
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
     showQuestion();
   } else {
     showResult();
   }
-};
-
-// 9️⃣ 找完全符合的食物
-function findMatchingFood() {
-  return foodList.find(food =>
-    food.tags.every(tag => userTags.includes(tag))
-  );
 }
 
-// 🔟 顯示結果
+// 8️⃣ 找完全匹配的食物
+function findMatchingFood() {
+  const exactMatch = foodList.find(food =>
+    food.tags.every(tag => userTags.includes(tag))
+  );
+  if (exactMatch) return exactMatch;
+
+  // 沒有完全符合 → 找最相似
+  let maxMatch = -1;
+  let closestFood = null;
+
+  foodList.forEach(food => {
+    const matchCount = food.tags.filter(tag => userTags.includes(tag)).length;
+    if (matchCount > maxMatch) {
+      maxMatch = matchCount;
+      closestFood = food;
+    }
+  });
+
+  return closestFood;
+}
+
+// 9️⃣ 顯示結果
 function showResult() {
   quiz.style.display = "none";
   result.style.display = "block";
 
   const matchedFood = findMatchingFood();
-
-  if (matchedFood) {
-    foodName.textContent = `推薦你吃：${matchedFood.name}`;
-  } else {
-    foodName.textContent = "找不到完全符合的食物，請再試一次！";
-  }
+  foodName.textContent = `推薦你吃：${matchedFood.name}`;
 
   console.log("使用者標籤：", userTags);
+  console.log("推薦食物標籤：", matchedFood.tags);
 }
+
+// 🔟 再測一次功能
+restartBtn.onclick = () => {
+  currentQuestion = 0;
+  userTags = [];
+  quiz.style.display = "block";
+  result.style.display = "none";
+  showQuestion();
+};
 
 // 1️⃣1️⃣ 啟動第一題
 showQuestion();

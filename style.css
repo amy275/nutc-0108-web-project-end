@@ -2,3 +2,113 @@ button {
         margin: 5px;
         padding: 8px 12px;
         }
+/* ===== 全局樣式 ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff8f0; /* 淺橘黃色背景 */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* ===== 標題 ===== */
+h1 {
+    margin-top: 30px;
+    font-size: 2.2rem;
+    color: #ff9f43;
+    text-shadow: 1px 1px 2px #ffe6cc;
+    text-align: center;
+}
+
+/* ===== Quiz 容器 ===== */
+#quiz, #result {
+    background-color: #fff3e6;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 30px 40px;
+    margin: 20px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* ===== 題目文字 ===== */
+#question {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+/* ===== 選項按鈕 ===== */
+#options button {
+    margin: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #ffcc99; /* 橘黃色按鈕 */
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+#options button:hover {
+    background-color: #ffb84d;
+    transform: scale(1.05);
+}
+
+/* ===== 下一題按鈕 ===== */
+#nextBtn, #restartBtn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background-color: #ff9f43;
+    color: white;
+    transition: all 0.2s ease;
+}
+
+#nextBtn:hover, #restartBtn:hover {
+    background-color: #ff7f00;
+    transform: scale(1.05);
+}
+
+/* ===== 結果文字 ===== */
+#foodName {
+    font-size: 1.5rem;
+    margin: 20px 0;
+}
+
+/* ===== 食物 Emoji ===== */
+#foodName::before {
+    content: "🍽️ ";
+    font-size: 1.5rem;
+}
+
+#foodName::after {
+    content: " 😋";
+}
+
+/* ===== 小螢幕優化 ===== */
+@media (max-width: 480px) {
+    #quiz, #result {
+        padding: 20px;
+    }
+
+    #options button {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    #nextBtn, #restartBtn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
