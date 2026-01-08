@@ -14,7 +14,7 @@ let pieChart;
 // 2️⃣ 題目資料
 const questions = [
   { text: "今天想吃什麼？", options: ["正餐 🍛", "輕食 🥪"] },
-  { text: "偏好的口味？", options: ["重口味 🌶️", "清淡 🥗", "甜 🍰"] },
+  { text: "偏好的口味？", options: ["重口味 🌶️", "清淡 🥗", "甜食 🍰"] },
   { text: "現在趕時間嗎？", options: ["很趕 ⏰", "不趕 🛋️"] },
   { text: "喜歡的風格？", options: ["台式 🥟", "日式 🍣", "西式 🍔"] },
   { text: "預算大概多少？", options: ["$ 💰", "$$ 💵", "$$$ 💎"] }
@@ -42,7 +42,7 @@ const foodList = [
   { name: "蛋糕 🍰", tags: ["light", "sweet", "relax", "western", "cheap"] },
   { name: "豆花 🥣", tags: ["light", "sweet", "fast", "taiwan", "cheap"] },
   { name: "剉冰 🍨", tags: ["light", "sweet", "fast", "taiwan", "mid"] },
-  { name: "鬆餅 🥞", tags: ["light", "sweet", "relax", "japense", "mid"] },
+  { name: "鬆餅 🥞", tags: ["light", "sweet", "relax", "japanese", "mid"] },
   { name: "手搖飲 🧋", tags: ["light", "sweet", "fast", "taiwan", "cheap"] }
 ];
 
@@ -126,7 +126,10 @@ function updateTable() {
 function updateChart() {
   const labels = Object.keys(foodStats);
   const data = Object.values(foodStats);
-  const bgColors = ['#FFB84D', '#FFA64D', '#FF9933', '#FF8000', '#FF6600'];
+  const bgColors = labels.map((_, i) =>
+  `hsl(${i * 360 / labels.length}, 70%, 65%)`
+);
+
 
   if (pieChart) {
     pieChart.data.datasets[0].data = data;
@@ -159,6 +162,11 @@ restartBtn.onclick = () => {
   quiz.style.display = "block";
   result.style.display = "none";
   showQuestion();
+}
+
+if (!matchedFood) {
+  foodName.textContent = "目前沒有合適的推薦 🤔";
+  return;
 }
 
 // 1️⃣4️⃣ 啟動第一題

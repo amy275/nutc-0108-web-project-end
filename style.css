@@ -71,6 +71,10 @@ h1 {
     transition: all 0.2s ease;
 }
 
+#result {
+    display: none;
+}
+
 #restartBtn:hover {
     background-color: #ff7f00;
     transform: scale(1.05);
