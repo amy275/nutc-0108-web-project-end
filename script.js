@@ -1,49 +1,35 @@
-// ===== 題目設定 =====
+// 1️⃣ DOM 元素
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+const foodName = document.getElementById("foodName");
+const restartBtn = document.getElementById("restartBtn");
+
+// 統計
+const foodTableBody = document.querySelector("#foodTable tbody");
+const ctx = document.getElementById('foodChart').getContext('2d');
+let pieChart;
+
+// 2️⃣ 題目資料
 const questions = [
-  {
-    text: "你想吃正餐還是輕食？",
-    options: ["正餐 🍛", "輕食 🥪"]
-  },
-  {
-    text: "偏好的口味？",
-    options: ["重口味 🌶️", "清淡 🥗", "甜 🍰"]
-  },
-  {
-    text: "現在趕時間嗎？",
-    options: ["趕時間 ⏱️", "不趕時間 ☕"]
-  },
-  {
-    text: "想吃哪種風格？",
-    options: ["台式 🇹🇼", "日式 🇯🇵", "西式 🇺🇸"]
-  },
-  {
-    text: "預算範圍？",
-    options: ["便宜 💰", "中等 💵", "偏高 💎"]
-  }
+  { text: "今天想吃什麼？", options: ["正餐 🍛", "輕食 🥪"] },
+  { text: "偏好的口味？", options: ["重口味 🌶️", "清淡 🥗", "甜 🍰"] },
+  { text: "現在趕時間嗎？", options: ["很趕 ⏰", "不趕 🛋️"] },
+  { text: "喜歡的風格？", options: ["台式 🥟", "日式 🍣", "西式 🍔"] },
+  { text: "預算大概多少？", options: ["$ 💰", "$$ 💵", "$$$ 💎"] }
 ];
 
-// ===== 選項 → 標籤對照 =====
-const answerTagMap = {
-  "正餐 🍛": "meal",
-  "輕食 🥪": "light",
+// 3️⃣ 標籤對應表
+const answerTagMap = [
+  { "正餐 🍛": "meal", "輕食 🥪": "light" },
+  { "重口味 🌶️": "strong", "清淡 🥗": "lightTaste", "甜 🍰": "sweet" },
+  { "很趕 ⏰": "fast", "不趕 🛋️": "relax" },
+  { "台式 🥟": "taiwan", "日式 🍣": "japanese", "西式 🍔": "western" },
+  { "$ 💰": "cheap", "$$ 💵": "mid", "$$$ 💎": "high" }
+];
 
-  "重口味 🌶️": "strong",
-  "清淡 🥗": "lightTaste",
-  "甜 🍰": "sweet",
-
-  "趕時間 ⏱️": "fast",
-  "不趕時間 ☕": "relax",
-
-  "台式 🇹🇼": "taiwan",
-  "日式 🇯🇵": "japanese",
-  "西式 🇺🇸": "western",
-
-  "便宜 💰": "cheap",
-  "中等 💵": "mid",
-  "偏高 💎": "expensive"
-};
-
-// ===== 食物資料（每個食物 5 個標籤）=====
+// 4️⃣ 食物資料
 const foodList = [
   { name: "雞排 🍗", tags: ["light", "strong", "fast", "taiwan", "cheap"] },
   { name: "鐵板燒 🔪", tags: ["meal", "strong", "relax", "taiwan", "high"] },
@@ -60,110 +46,122 @@ const foodList = [
   { name: "手搖飲 🧋", tags: ["light", "sweet", "fast", "taiwan", "cheap"] }
 ];
 
-// ===== 狀態變數 =====
+// 5️⃣ 狀態
 let currentQuestion = 0;
 let userTags = [];
-let resultCount = {};
-let chartInstance = null;
 
-// ===== DOM =====
-const questionText = document.getElementById("question-text");
-const optionsDiv = document.getElementById("options");
-const resultDiv = document.getElementById("result");
-const foodName = document.getElementById("food-name");
-const retryBtn = document.getElementById("retry");
+// 6️⃣ 統計初始化
+let foodStats = {};
+foodList.forEach(food => foodStats[food.name] = 0);
 
-// ===== 初始化 =====
-showQuestion();
-
-// ===== 顯示題目 =====
+// 7️⃣ 顯示題目
 function showQuestion() {
-  const q = questions[currentQuestion];
-  questionText.textContent = q.text;
-  optionsDiv.innerHTML = "";
+  questionEl.textContent = questions[currentQuestion].text;
+  optionsEl.innerHTML = "";
 
-  q.options.forEach(option => {
+  questions[currentQuestion].options.forEach(option => {
     const btn = document.createElement("button");
     btn.textContent = option;
-    btn.onclick = () => selectOption(option);
-    optionsDiv.appendChild(btn);
+    btn.onclick = () => selectAnswer(option);
+    optionsEl.appendChild(btn);
   });
 }
 
-// ===== 點選選項 =====
-function selectOption(option) {
-  const tag = answerTagMap[option];
-  if (tag) userTags.push(tag);
+// 8️⃣ 選擇答案
+function selectAnswer(answer) {
+  userTags[currentQuestion] = answerTagMap[currentQuestion][answer];
 
-  currentQuestion++;
-
-  if (currentQuestion < questions.length) {
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
     showQuestion();
   } else {
     showResult();
   }
 }
 
-// ===== 顯示結果 =====
-function showResult() {
-  document.getElementById("quiz").style.display = "none";
-  resultDiv.style.display = "block";
+// 9️⃣ 找最匹配食物
+function findMatchingFood() {
+  const exactMatch = foodList.find(food =>
+    food.tags.every(tag => userTags.includes(tag))
+  );
+  if (exactMatch) return exactMatch;
 
-  let bestMatch = null;
-  let bestScore = -1;
-
-  foods.forEach(food => {
-    const score = food.tags.filter(tag => userTags.includes(tag)).length;
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = food;
+  // 找最相似
+  let maxMatch = -1, closestFood = null;
+  foodList.forEach(food => {
+    const matchCount = food.tags.filter(tag => userTags.includes(tag)).length;
+    if (matchCount > maxMatch) {
+      maxMatch = matchCount;
+      closestFood = food;
     }
   });
+  return closestFood;
+}
 
-  if (!bestMatch) {
-    foodName.textContent = "目前沒有合適的推薦 🤔";
-    return;
-  }
+// 🔟 顯示結果
+function showResult() {
+  quiz.style.display = "none";
+  result.style.display = "block";
 
-  foodName.textContent = bestMatch.name;
+  const matchedFood = findMatchingFood();
+  foodName.textContent = `推薦你吃：${matchedFood.name}`;
 
-  // 統計結果
-  resultCount[bestMatch.name] = (resultCount[bestMatch.name] || 0) + 1;
+  // 更新統計
+  foodStats[matchedFood.name] += 1;
+  updateTable();
   updateChart();
 }
 
-// ===== 再測一次 =====
-retryBtn.onclick = () => {
+// 1️⃣1️⃣ 更新表格
+function updateTable() {
+  foodTableBody.innerHTML = "";
+  for (let food in foodStats) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${food}</td><td>${foodStats[food]}</td>`;
+    foodTableBody.appendChild(tr);
+  }
+}
+
+// 1️⃣2️⃣ 更新圓餅圖
+function updateChart() {
+  const labels = Object.keys(foodStats);
+  const data = Object.values(foodStats);
+  const bgColors = labels.map((_, i) =>
+  `hsl(${i * 360 / labels.length}, 70%, 65%)`
+);
+
+  if (pieChart) {
+    pieChart.data.datasets[0].data = data;
+    pieChart.update();
+  } else {
+    pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '食物推薦統計',
+          data: data,
+          backgroundColor: bgColors
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
+}
+
+// 1️⃣3️⃣ 再測一次
+restartBtn.onclick = () => {
   currentQuestion = 0;
   userTags = [];
-  document.getElementById("quiz").style.display = "block";
-  resultDiv.style.display = "none";
+  quiz.style.display = "block";
+  result.style.display = "none";
   showQuestion();
-};
-
-// ===== 更新圓餅圖 =====
-function updateChart() {
-  const ctx = document.getElementById("resultChart");
-
-  const labels = Object.keys(resultCount);
-  const data = Object.values(resultCount);
-
-  const bgColors = labels.map((_, i) =>
-    `hsl(${(i * 360) / labels.length}, 70%, 65%)`
-  );
-
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
-
-  chartInstance = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: labels,
-      datasets: [{
-        data: data,
-        backgroundColor: bgColors
-      }]
-    }
-  });
 }
+
+// 1️⃣4️⃣ 啟動第一題
+showQuestion();
